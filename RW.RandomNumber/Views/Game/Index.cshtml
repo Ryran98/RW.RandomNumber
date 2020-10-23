@@ -1,0 +1,72 @@
+﻿@model RW.RandomNumber.Models.Game
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@if (@Model == null)
+{
+    <h1>Welcome to Ryan's Random Number Game</h1>
+
+    <div class="container-fluid">
+        @using (@Html.BeginForm("Start", "Game"))
+        {
+            @Html.DropDownList("Difficulty", EnumHelper.GetSelectList(typeof(RW.RandomNumber.Models.Difficulties)))
+
+            <button type="submit">
+                <span>Start</span>
+            </button>
+        }
+    </div>
+}
+else
+{
+<div class="container-fluid">
+    @Html.LabelFor(model => model.RemainingGuesses) : @Html.DisplayFor(model => model.RemainingGuesses)
+    <br />
+    Minimum Number : 1
+    <br />
+    @Html.LabelFor(model => model.Difficulty.MaximumNumber) : @Html.DisplayFor(model => model.Difficulty.MaximumNumber)
+
+    @if (Model.Win)
+    {
+        <h2>Congratulations! You have guessed the Random Number of @Model.RandomNumber</h2>
+        <h3>Guesses Remaining : @Model.RemainingGuesses</h3>
+
+        @Html.ActionLink("Play Again", "Index")
+    }
+    else
+    {
+        if (Model.RemainingGuesses > 0)
+        {
+            <div class="container-fluid">
+
+                @if (Model.Hint != null)
+                {
+                    <h3 style="color:red">@Model.Hint</h3>
+                }
+
+                @using (@Html.BeginForm("Guess", "Game"))
+                {
+                    @Html.HiddenFor(model => model.RandomNumber)
+                    @Html.HiddenFor(model => model.Difficulty)
+                    @Html.HiddenFor(model => model.RemainingGuesses)
+
+                    @Html.TextBox("Guess")
+
+                    <button type="submit">
+                        <span>Guess</span>
+                    </button>
+                }
+            </div>
+        }
+        else
+        {
+            <h2>Unlucky! You have run out of Guesses</h2>
+            <h3>The Random Number was : @Model.RandomNumber</h3>
+
+            @Html.ActionLink("Play Again", "Index")
+        }
+    }
+</div>
+}
