@@ -6,19 +6,13 @@ namespace RW.RandomNumber.Models
 {
     public class Game
     {
-        public Base Difficulty { get; set; }
         private int _RandomNumber { get; set; }
-        [Display(Name = "Number of Guesses Remaining")]
+        public Base Difficulty { get; set; }
+
+        [Display(Name = "Guesses Remaining")]
         public int RemainingGuesses { get; set; }
         public bool Win { get; set; }
         public string Message { get; set; }
-
-        public Game(Base difficulty, int randomNumber, int remainingGuesses)
-        {
-            Difficulty = difficulty;
-            _RandomNumber = randomNumber;
-            RemainingGuesses = remainingGuesses;
-        }
 
         public Game(Difficulties difficulty)
         {
@@ -32,15 +26,33 @@ namespace RW.RandomNumber.Models
 
         public bool Guess(int guess)
         {
+            if (!_ValidateGuess(guess))
+                return false;
+
             if (guess == _RandomNumber)
+            {
+                Message = $"Congratulations! You guessed the random number of : {_RandomNumber}";
                 return true;
+            }
 
             RemainingGuesses -= 1;
 
             if (RemainingGuesses > 0)
                 Message = guess > _RandomNumber ? "Your guess was too high" : "Your guess was too low";
             else
-                Message = $"You have run out of guesses! The Random Number was : {_RandomNumber}";
+                Message = $"The Random Number was : {_RandomNumber}";
+
+            return false;
+        }
+
+        private bool _ValidateGuess(int guess)
+        {
+            if (guess >= Difficulty.MinimumNumber && guess <= Difficulty.MaximumNumber)
+                return true;
+
+            Message = guess < Difficulty.MinimumNumber
+                ? $"You must guess a number of {Difficulty.MinimumNumber} or higher"
+                : $"You must guess a number of {Difficulty.MaximumNumber} or lower";
 
             return false;
         }

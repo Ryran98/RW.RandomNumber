@@ -131,6 +131,7 @@
     <Compile Include="Models\Difficulty\Factory.cs" />
     <Compile Include="Models\Difficulty\Hard.cs" />
     <Compile Include="Models\Difficulty\Medium.cs" />
+    <Compile Include="Models\Difficulty\VeryHard.cs" />
     <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\Game.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Web.Mvc;
 using RW.RandomNumber.Models;
-using RW.RandomNumber.Models.Difficulty;
 
 namespace RW.RandomNumber.Controllers
 {
@@ -24,10 +23,24 @@ namespace RW.RandomNumber.Controllers
 
         public ActionResult Guess(FormCollection collection)
         {
+            _ResetError();
             Game game = (Game)Session["Game"];
-            game.Win = game.Guess(int.Parse(collection["Guess"].ToString()));
+
+            try
+            {
+                game.Win = game.Guess(int.Parse(collection["Guess"].ToString()));
+            }
+            catch (Exception e)
+            {
+                Session["Error"] = e.Message;
+            }
 
             return View("Index", game);
+        }
+
+        private void _ResetError()
+        {
+            Session["Error"] = null;
         }
     }
 }

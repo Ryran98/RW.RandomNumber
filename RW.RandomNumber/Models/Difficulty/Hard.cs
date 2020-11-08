@@ -2,11 +2,6 @@
 {
     public class Hard : Base
     {
-        public Hard()
-        {
-            Name = "Hard";
-            MaximumNumber = 1000;
-            NumberOfGuesses = 4;
-        }
+        public Hard() : base("Hard", 1, 1000, 4) { }
     }
 }

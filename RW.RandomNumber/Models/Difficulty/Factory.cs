@@ -14,6 +14,8 @@ namespace RW.RandomNumber.Models.Difficulty
                     return new Medium();
                 case Difficulties.Hard:
                     return new Hard();
+                case Difficulties.VeryHard:
+                    return new VeryHard();
                 default:
                     throw new Exception($"No difficulty found for {difficulty}");
             }
