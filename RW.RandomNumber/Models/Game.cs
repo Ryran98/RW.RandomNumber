@@ -7,16 +7,16 @@ namespace RW.RandomNumber.Models
     public class Game
     {
         public Base Difficulty { get; set; }
-        public int RandomNumber { get; set; }
+        private int _RandomNumber { get; set; }
         [Display(Name = "Number of Guesses Remaining")]
         public int RemainingGuesses { get; set; }
         public bool Win { get; set; }
-        public string Hint { get; set; }
+        public string Message { get; set; }
 
         public Game(Base difficulty, int randomNumber, int remainingGuesses)
         {
             Difficulty = difficulty;
-            RandomNumber = randomNumber;
+            _RandomNumber = randomNumber;
             RemainingGuesses = remainingGuesses;
         }
 
@@ -25,18 +25,22 @@ namespace RW.RandomNumber.Models
             Difficulty = Factory.Difficulty(difficulty);
             
             Random random = new Random();
-            RandomNumber = random.Next(1, Difficulty.MaximumNumber);
+            _RandomNumber = random.Next(1, Difficulty.MaximumNumber);
 
             RemainingGuesses = Difficulty.NumberOfGuesses;
         }
 
         public bool Guess(int guess)
         {
-            if (guess == RandomNumber)
+            if (guess == _RandomNumber)
                 return true;
 
             RemainingGuesses -= 1;
-            Hint = guess > RandomNumber ? "Too High" : "Too Low";
+
+            if (RemainingGuesses > 0)
+                Message = guess > _RandomNumber ? "Your guess was too high" : "Your guess was too low";
+            else
+                Message = $"You have run out of guesses! The Random Number was : {_RandomNumber}";
 
             return false;
         }

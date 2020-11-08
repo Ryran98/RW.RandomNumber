@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using RW.RandomNumber.Models;
+using RW.RandomNumber.Models.Difficulty;
 
 namespace RW.RandomNumber.Controllers
 {
@@ -13,18 +12,22 @@ namespace RW.RandomNumber.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult Start(FormCollection collection)
         {
-            ViewBag.Message = "Your application description page.";
+            Difficulties difficulty = (Difficulties)Enum.Parse(typeof(Difficulties), collection["Difficulty"]);
+            Game game = new Game(difficulty);
 
-            return View();
+            Session["Game"] = game;
+
+            return View("Index", game);
         }
 
-        public ActionResult Contact()
+        public ActionResult Guess(FormCollection collection)
         {
-            ViewBag.Message = "Your contact page.";
+            Game game = (Game)Session["Game"];
+            game.Win = game.Guess(int.Parse(collection["Guess"].ToString()));
 
-            return View();
+            return View("Index", game);
         }
     }
 }
