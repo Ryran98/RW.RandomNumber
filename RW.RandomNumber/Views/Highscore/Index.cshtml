@@ -3,5 +3,12 @@
     ViewBag.Title = "Highscores";
 }
 
-<h2>Index</h2>
+@if (@Session["Error"] != null)
+{
+    <strong class="text-warning">ERROR : @Session["Error"]</strong>
+}
+
+<div class="container" id="highscores" align="center">
+    <h2 class="text-dark">Highscores</h2>
+</div>
 

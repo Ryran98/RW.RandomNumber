@@ -22,7 +22,7 @@ textarea {
     max-width: 280px;
 }
 
-#game {
+#game, #highscores {
     padding-top: 50px;
 }
 
