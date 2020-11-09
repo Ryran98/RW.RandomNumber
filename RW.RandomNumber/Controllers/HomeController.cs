@@ -38,6 +38,18 @@ namespace RW.RandomNumber.Controllers
             return View("Index", game);
         }
 
+        [HttpGet]
+        public double GetProgress()
+        {
+            Game game = (Game)Session["Game"];
+
+            double numberOfGuesses = (double) game.Difficulty.NumberOfGuesses;
+            double remainingGuesses = (double) game.RemainingGuesses;
+
+            double guessesUsed = numberOfGuesses - remainingGuesses;
+            return guessesUsed / numberOfGuesses * 100;
+        }
+
         private void _ResetError()
         {
             Session["Error"] = null;

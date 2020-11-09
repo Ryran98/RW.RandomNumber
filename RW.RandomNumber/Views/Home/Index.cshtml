@@ -28,7 +28,7 @@
     }
     else
     {
-        <div class="container">
+        <div class="container col-sm-10 col-md-6 col-lg-4">
             <h2 class="text-primary">@Model.Difficulty.Name</h2>
             <div align="left">
                 @Html.LabelFor(model => model.RemainingGuesses) : @Html.DisplayFor(model => model.RemainingGuesses)
@@ -39,7 +39,7 @@
             </div>
 
             <div id="progress-bar" class="progress">
-                <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" style="width: (2 / @Model.Difficulty.NumberOfGuesses * 100)%;"></div>
+                <div id="guess-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar"></div>
             </div>
 
             @if (Model.Win)
@@ -51,20 +51,18 @@
             {
                 if (Model.RemainingGuesses > 0)
                 {
+                    <div id="guess-box" class="container-fluid">
+                        @using (@Html.BeginForm("Guess", "Home"))
+                        {
+                            @Html.TextBox("Guess", "", new { @class = "col-form-label col-form-label-lg" })
+                            <br/>
+                            <button id="guess-button" class="btn btn-lg btn-success" type="submit">
+                                <span>Guess</span>
+                            </button>
+                        }
 
-                    if (Model.Message != null)
-                    {
                         <h3 style="color: red">@Model.Message</h3>
-                    }
-
-                    using (@Html.BeginForm("Guess", "Home"))
-                    {
-                        @Html.TextBox("Guess")
-
-                        <button type="submit">
-                            <span>Guess</span>
-                        </button>
-                    }
+                    </div>
                 }
                 else
                 {
@@ -76,3 +74,18 @@
         </div>
     }
 </div>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/Home/GetProgress',
+            method: 'GET',
+            contentType: 'application/json',
+            success: function (response) {
+                var progress = response;
+                console.log(`Progress : ${progress}`);
+                $('#guess-progress-bar').css('width', progress + '%');
+            }
+        });
+    });
+</script>

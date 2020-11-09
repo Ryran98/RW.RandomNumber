@@ -29,3 +29,11 @@ textarea {
 .play-again-btn {
     color: white
 }
+
+#guess-box {
+    margin-top: 20px;
+}
+
+#guess-button {
+    margin-top: 20px;
+}
