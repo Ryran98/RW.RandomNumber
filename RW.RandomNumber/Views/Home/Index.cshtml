@@ -4,64 +4,88 @@
     ViewBag.Title = "Game";
 }
 
-@if (@Model == null)
+@if (@Session["Error"] != null)
 {
-    <h1>Welcome to Ryan's Random Number Game</h1>
+    <strong class="text-warning">ERROR : @Session["Error"]</strong>
+}
 
-    <div class="container-fluid">
-        @using (@Html.BeginForm("Start", "Home"))
+<div class="container" id="game" align="center">
+    @if (@Model == null)
+    {
+        <div class="container">
+            <h2 class="text-dark">Welcome to Ryan's Random Number Game</h2>
+            <p>Select a difficulty and press Start to begin</p>
+        </div>
+
+        using (@Html.BeginForm("Start", "Home"))
         {
-            @Html.DropDownList("Difficulty", EnumHelper.GetSelectList(typeof(RW.RandomNumber.Models.Difficulties)), new { @class = "btn btn-primary btn-lg"})
+            @Html.DropDownList("Difficulty", EnumHelper.GetSelectList(typeof(RW.RandomNumber.Models.Difficulties)), new { @class = "btn btn-primary btn-lg" })
 
-            <button type="submit">
-                <span>Start</span>
+            <button class="btn btn-lg btn-success" type="submit">
+                Start
             </button>
         }
-    </div>
-}
-else
-{
-    <div class="container-fluid">
-        @Html.LabelFor(model => model.RemainingGuesses) : @Html.DisplayFor(model => model.RemainingGuesses)
-        <br />
-        Minimum Number : 1
-        <br />
-        @Html.LabelFor(model => model.Difficulty.MaximumNumber) : @Html.DisplayFor(model => model.Difficulty.MaximumNumber)
+    }
+    else
+    {
+        <div class="container col-sm-10 col-md-6 col-lg-4">
+            <h2 class="text-primary">@Model.Difficulty.Name</h2>
+            <div align="left">
+                @Html.LabelFor(model => model.RemainingGuesses) : @Html.DisplayFor(model => model.RemainingGuesses)
+                <br />
+                @Html.LabelFor(model => model.Difficulty.MinimumNumber) : @Html.DisplayFor(model => model.Difficulty.MinimumNumber)
+                <br />
+                @Html.LabelFor(model => model.Difficulty.MaximumNumber) : @Html.DisplayFor(model => model.Difficulty.MaximumNumber)
+            </div>
 
-        @if (Model.Win)
-        {
-            <h2>Congratulations! You have guessed the Random Number</h2>
-            <h3>Guesses Remaining : @Model.RemainingGuesses</h3>
+            <div id="progress-bar" class="progress">
+                <div id="guess-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar"></div>
+            </div>
 
-            @Html.ActionLink("Play Again", "Index")
-        }
-        else
-        {
-            if (Model.RemainingGuesses > 0)
+            @if (Model.Win)
             {
-                <div class="container-fluid">
-
-                    @if (Model.Message != null)
-                    {
-                        <h3 style="color:red">@Model.Message</h3>
-                    }
-
-                    @using (@Html.BeginForm("Guess", "Home"))
-                    {
-                        @Html.TextBox("Guess")
-
-                        <button type="submit">
-                            <span>Guess</span>
-                        </button>
-                    }
-                </div>
+                <h2>@Model.Message</h2>
+                <input class="btn btn-lg btn-success" type="button" value="Play Again" onclick="location.href='@Url.Action("Index", "Home")'" />
             }
             else
             {
-                <h2>@Model.Message</h2>
+                if (Model.RemainingGuesses > 0)
+                {
+                    <div id="guess-box" class="container-fluid">
+                        @using (@Html.BeginForm("Guess", "Home"))
+                        {
+                            @Html.TextBox("Guess", "", new { @class = "col-form-label col-form-label-lg" })
+                            <br/>
+                            <button id="guess-button" class="btn btn-lg btn-success" type="submit">
+                                <span>Guess</span>
+                            </button>
+                        }
 
-                @Html.ActionLink("Play Again", "Index")
+                        <h3 style="color: red">@Model.Message</h3>
+                    </div>
+                }
+                else
+                {
+                    <h2>You have run out of guesses! </h2>
+                    <h2>@Model.Message</h2>
+                    <input class="btn btn-lg btn-success" type="button" value="Play Again" onclick="location.href='@Url.Action("Index", "Home")'" />
+                }
             }
-        }
-    </div>
-}
+        </div>
+    }
+</div>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/Home/GetProgress',
+            method: 'GET',
+            contentType: 'application/json',
+            success: function (response) {
+                var progress = response;
+                console.log(`Progress : ${progress}`);
+                $('#guess-progress-bar').css('width', progress + '%');
+            }
+        });
+    });
+</script>

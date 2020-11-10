@@ -2,11 +2,6 @@
 {
     public class Medium : Base
     {
-        public Medium()
-        {
-            Name = "Medium";
-            MaximumNumber = 100;
-            NumberOfGuesses = 5;
-        }
+        public Medium(int id) : base(id, "Medium", 1, 100, 5) { }
     }
 }
