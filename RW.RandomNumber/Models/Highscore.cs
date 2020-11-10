@@ -48,5 +48,20 @@ namespace RW.RandomNumber.Models
 
             return false;
         }
+
+        public static void New(Game game)
+        {
+            using (ApplicationDbContext db = new ApplicationDbContext())
+            {
+                if (!db.Highscores.Any(h => h.DifficultyId == game.Difficulty.Id))
+                    throw new Exception($"No highscore could be found for difficulty ID : {game.Difficulty.Id}");
+
+                Highscore highscore = db.Highscores.First(h => h.DifficultyId == game.Difficulty.Id);
+                highscore.Name = game.PlayerName.Trim();
+                highscore.RemainingGuesses = game.RemainingGuesses;
+
+                db.SaveChanges();
+            }
+        }
     }
 }

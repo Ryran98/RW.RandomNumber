@@ -36,6 +36,8 @@ namespace RW.RandomNumber.Controllers
                 if (!Highscore.Check(game))
                     throw new Exception($"No new highscore could be found");
 
+                Highscore.New(game);
+
                 return Detail(game.Difficulty.Id);
             }
             catch (Exception e)

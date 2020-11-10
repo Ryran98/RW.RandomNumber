@@ -24,6 +24,11 @@
             <button class="btn btn-lg btn-success" type="submit">
                 Start
             </button>
+
+            <div class="container">
+                <h2 class="text-dark">Name : </h2>
+                @Html.TextBox("PlayerName", "", new { @class = "col-form-label col-form-label-lg" })
+            </div>
         }
     }
     else
@@ -44,7 +49,16 @@
 
             @if (Model.Win)
             {
-                <h2>@Model.Message</h2>
+                <h2 class="text-dark">@Model.Message</h2>
+
+                if (Model.NewHighscore)
+                {
+                    <h2 class="text-primary">You have set a new Highscore!</h2>
+                    <button id="save-highscore" class="btn btn-lg btn-info">
+                        <span>Save Highscore</span>
+                    </button>
+                }
+
                 <input class="btn btn-lg btn-success" type="button" value="Play Again" onclick="location.href='@Url.Action("Index", "Home")'" />
             }
             else
@@ -55,7 +69,7 @@
                         @using (@Html.BeginForm("Guess", "Home"))
                         {
                             @Html.TextBox("Guess", "", new { @class = "col-form-label col-form-label-lg" })
-                            <br/>
+                            <br />
                             <button id="guess-button" class="btn btn-lg btn-success" type="submit">
                                 <span>Guess</span>
                             </button>
@@ -86,6 +100,17 @@
                 console.log(`Progress : ${progress}`);
                 $('#guess-progress-bar').css('width', progress + '%');
             }
+        });
+
+        $('#save-highscore').on('click', function() {
+            $.ajax({
+                url: '/Highscore/New',
+                method: 'POST',
+                contentType: 'application/json',
+                success: function(response) {
+
+                }
+            });
         });
     });
 </script>

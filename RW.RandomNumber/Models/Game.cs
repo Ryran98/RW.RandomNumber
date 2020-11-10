@@ -16,8 +16,9 @@ namespace RW.RandomNumber.Models
         public bool NewHighscore { get; set; }
         public string Message { get; set; }
 
-        public Game(Difficulties difficulty)
+        public Game(string name, Difficulties difficulty)
         {
+            PlayerName = name.Trim();
             Difficulty = Factory.Difficulty(difficulty);
             
             Random random = new Random();

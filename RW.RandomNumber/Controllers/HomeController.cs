@@ -15,7 +15,7 @@ namespace RW.RandomNumber.Controllers
         public ActionResult Start(FormCollection collection)
         {
             Difficulties difficulty = (Difficulties)Enum.Parse(typeof(Difficulties), collection["Difficulty"]);
-            Game game = new Game(difficulty);
+            Game game = new Game(collection["PlayerName"], difficulty);
 
             Session["Game"] = game;
 
