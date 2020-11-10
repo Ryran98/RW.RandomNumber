@@ -1,31 +1,91 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model RW.RandomNumber.Models.Game
+
+@{
+    ViewBag.Title = "Game";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+@if (@Session["Error"] != null)
+{
+    <strong class="text-warning">ERROR : @Session["Error"]</strong>
+}
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
+<div class="container" id="game" align="center">
+    @if (@Model == null)
+    {
+        <div class="container">
+            <h2 class="text-dark">Welcome to Ryan's Random Number Game</h2>
+            <p>Select a difficulty and press Start to begin</p>
+        </div>
+
+        using (@Html.BeginForm("Start", "Home"))
+        {
+            @Html.DropDownList("Difficulty", EnumHelper.GetSelectList(typeof(RW.RandomNumber.Models.Difficulties)), new { @class = "btn btn-primary btn-lg" })
+
+            <button class="btn btn-lg btn-success" type="submit">
+                Start
+            </button>
+        }
+    }
+    else
+    {
+        <div class="container col-sm-10 col-md-6 col-lg-4">
+            <h2 class="text-primary">@Model.Difficulty.Name</h2>
+            <div align="left">
+                @Html.LabelFor(model => model.RemainingGuesses) : @Html.DisplayFor(model => model.RemainingGuesses)
+                <br />
+                @Html.LabelFor(model => model.Difficulty.MinimumNumber) : @Html.DisplayFor(model => model.Difficulty.MinimumNumber)
+                <br />
+                @Html.LabelFor(model => model.Difficulty.MaximumNumber) : @Html.DisplayFor(model => model.Difficulty.MaximumNumber)
+            </div>
+
+            <div id="progress-bar" class="progress">
+                <div id="guess-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar"></div>
+            </div>
+
+            @if (Model.Win)
+            {
+                <h2>@Model.Message</h2>
+                <input class="btn btn-lg btn-success" type="button" value="Play Again" onclick="location.href='@Url.Action("Index", "Home")'" />
+            }
+            else
+            {
+                if (Model.RemainingGuesses > 0)
+                {
+                    <div id="guess-box" class="container-fluid">
+                        @using (@Html.BeginForm("Guess", "Home"))
+                        {
+                            @Html.TextBox("Guess", "", new { @class = "col-form-label col-form-label-lg" })
+                            <br/>
+                            <button id="guess-button" class="btn btn-lg btn-success" type="submit">
+                                <span>Guess</span>
+                            </button>
+                        }
+
+                        <h3 style="color: red">@Model.Message</h3>
+                    </div>
+                }
+                else
+                {
+                    <h2>You have run out of guesses! </h2>
+                    <h2>@Model.Message</h2>
+                    <input class="btn btn-lg btn-success" type="button" value="Play Again" onclick="location.href='@Url.Action("Index", "Home")'" />
+                }
+            }
+        </div>
+    }
 </div>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/Home/GetProgress',
+            method: 'GET',
+            contentType: 'application/json',
+            success: function (response) {
+                var progress = response;
+                console.log(`Progress : ${progress}`);
+                $('#guess-progress-bar').css('width', progress + '%');
+            }
+        });
+    });
+</script>

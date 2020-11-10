@@ -6,37 +6,55 @@ namespace RW.RandomNumber.Models
 {
     public class Game
     {
+        private int _RandomNumber { get; set; }
+        public string PlayerName { get; set; }
         public Base Difficulty { get; set; }
-        public int RandomNumber { get; set; }
-        [Display(Name = "Number of Guesses Remaining")]
+
+        [Display(Name = "Guesses Remaining")]
         public int RemainingGuesses { get; set; }
         public bool Win { get; set; }
-        public string Hint { get; set; }
-
-        public Game(Base difficulty, int randomNumber, int remainingGuesses)
-        {
-            Difficulty = difficulty;
-            RandomNumber = randomNumber;
-            RemainingGuesses = remainingGuesses;
-        }
+        public bool NewHighscore { get; set; }
+        public string Message { get; set; }
 
         public Game(Difficulties difficulty)
         {
             Difficulty = Factory.Difficulty(difficulty);
             
             Random random = new Random();
-            RandomNumber = random.Next(1, Difficulty.MaximumNumber);
+            _RandomNumber = random.Next(1, Difficulty.MaximumNumber);
 
             RemainingGuesses = Difficulty.NumberOfGuesses;
         }
 
         public bool Guess(int guess)
         {
-            if (guess == RandomNumber)
+            if (!_ValidateGuess(guess))
+                return false;
+
+            if (guess == _RandomNumber)
+            {
+                Message = $"Congratulations! You guessed the random number of : {_RandomNumber}";
                 return true;
+            }
 
             RemainingGuesses -= 1;
-            Hint = guess > RandomNumber ? "Too High" : "Too Low";
+
+            if (RemainingGuesses > 0)
+                Message = guess > _RandomNumber ? "Your guess was too high" : "Your guess was too low";
+            else
+                Message = $"The Random Number was : {_RandomNumber}";
+
+            return false;
+        }
+
+        private bool _ValidateGuess(int guess)
+        {
+            if (guess >= Difficulty.MinimumNumber && guess <= Difficulty.MaximumNumber)
+                return true;
+
+            Message = guess < Difficulty.MinimumNumber
+                ? $"You must guess a number of {Difficulty.MinimumNumber} or higher"
+                : $"You must guess a number of {Difficulty.MaximumNumber} or lower";
 
             return false;
         }

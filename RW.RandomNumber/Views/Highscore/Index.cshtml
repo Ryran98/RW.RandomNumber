@@ -1,0 +1,22 @@
+﻿@using RW.RandomNumber.Models
+@{
+    ViewBag.Title = "Highscores";
+}
+
+@if (@Session["Error"] != null)
+{
+    <strong class="text-warning">ERROR : @Session["Error"]</strong>
+}
+
+<div class="container" id="highscores" align="center">
+    
+    <h2 class="text-dark">Highscores</h2>
+    
+    @foreach (var difficulty in Enum.GetValues(typeof(Difficulties)))
+    {
+        <button class="btn btn-success btn-lg">
+            @Html.ActionLink(difficulty.ToString(), "Detail", "Highscore", new {difficultyId = (int)difficulty}, null)
+        </button>
+    }
+
+</div>

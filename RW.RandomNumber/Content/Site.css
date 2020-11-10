@@ -1,5 +1,4 @@
 ﻿body {
-    padding-top: 50px;
     padding-bottom: 20px;
 }
 
@@ -21,4 +20,20 @@ input,
 select,
 textarea {
     max-width: 280px;
+}
+
+#game, #highscores {
+    padding-top: 50px;
+}
+
+.play-again-btn {
+    color: white
+}
+
+#guess-box {
+    margin-top: 20px;
+}
+
+#guess-button {
+    margin-top: 20px;
 }

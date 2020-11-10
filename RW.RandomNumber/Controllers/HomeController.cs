@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using RW.RandomNumber.Models;
 
 namespace RW.RandomNumber.Controllers
 {
@@ -13,18 +12,49 @@ namespace RW.RandomNumber.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult Start(FormCollection collection)
         {
-            ViewBag.Message = "Your application description page.";
+            Difficulties difficulty = (Difficulties)Enum.Parse(typeof(Difficulties), collection["Difficulty"]);
+            Game game = new Game(difficulty);
 
-            return View();
+            Session["Game"] = game;
+
+            return View("Index", game);
         }
 
-        public ActionResult Contact()
+        public ActionResult Guess(FormCollection collection)
         {
-            ViewBag.Message = "Your contact page.";
+            _ResetError();
+            Game game = (Game)Session["Game"];
 
-            return View();
+            try
+            {
+                game.Win = game.Guess(int.Parse(collection["Guess"].ToString()));
+                game.NewHighscore = Highscore.Check(game);
+            }
+            catch (Exception e)
+            {
+                Session["Error"] = e.Message;
+            }
+
+            return View("Index", game);
+        }
+
+        [HttpGet]
+        public double GetProgress()
+        {
+            Game game = (Game)Session["Game"];
+
+            double numberOfGuesses = (double) game.Difficulty.NumberOfGuesses;
+            double remainingGuesses = (double) game.RemainingGuesses;
+
+            double guessesUsed = numberOfGuesses - remainingGuesses;
+            return guessesUsed / numberOfGuesses * 100;
+        }
+
+        private void _ResetError()
+        {
+            Session["Error"] = null;
         }
     }
 }
