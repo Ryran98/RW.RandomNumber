@@ -2,6 +2,6 @@
 {
     public class Medium : Base
     {
-        public Medium() : base("Medium", 1, 100, 5) { }
+        public Medium(int id) : base(id, "Medium", 1, 100, 5) { }
     }
 }

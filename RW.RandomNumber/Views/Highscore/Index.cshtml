@@ -1,4 +1,4 @@
-﻿
+﻿@using RW.RandomNumber.Models
 @{
     ViewBag.Title = "Highscores";
 }
@@ -9,6 +9,14 @@
 }
 
 <div class="container" id="highscores" align="center">
+    
     <h2 class="text-dark">Highscores</h2>
-</div>
+    
+    @foreach (var difficulty in Enum.GetValues(typeof(Difficulties)))
+    {
+        <button class="btn btn-success btn-lg">
+            @Html.ActionLink(difficulty.ToString(), "Detail", "Highscore", new {difficultyId = (int)difficulty}, null)
+        </button>
+    }
 
+</div>

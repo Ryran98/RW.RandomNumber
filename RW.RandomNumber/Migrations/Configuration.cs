@@ -1,4 +1,5 @@
-﻿using RW.RandomNumber.Models;
+﻿using System.Collections.Generic;
+using RW.RandomNumber.Models;
 using System.Data.Entity.Migrations;
 
 namespace RW.RandomNumber.Migrations
@@ -12,36 +13,47 @@ namespace RW.RandomNumber.Migrations
 
         protected override void Seed(ApplicationDbContext context)
         {
-            Highscore easy = new Highscore
-            {
-                Id = 1,
-                DifficultyId = (int)Difficulties.Easy,
-                Name = "Ryan Wilson",
-                RemainingGuesses = 1
-            };
+            List<Highscore> defaults = _DefaultHighscores();
 
-            Highscore medium = new Highscore
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
-                Id = 2,
-                DifficultyId = (int)Difficulties.Medium,
-                Name = "Ryan Wilson",
-                RemainingGuesses = 1
-            };
+                defaults.ForEach(h => db.Highscores.AddOrUpdate(h));
+                db.SaveChanges();
+            }
+        }
 
-            Highscore hard = new Highscore
+        private List<Highscore> _DefaultHighscores()
+        {
+            return new List<Highscore>
             {
-                Id = 3,
-                DifficultyId = (int)Difficulties.Hard,
-                Name = "Ryan Wilson",
-                RemainingGuesses = 1
-            };
-
-            Highscore veryHard = new Highscore
-            {
-                Id = 4,
-                DifficultyId = (int)Difficulties.VeryHard,
-                Name = "Ryan Wilson",
-                RemainingGuesses = 1
+                new Highscore
+                {
+                    Id = 1,
+                    DifficultyId = (int)Difficulties.Easy,
+                    Name = "DEFAULT",
+                    RemainingGuesses = 1
+                },
+                new Highscore
+                {
+                    Id = 2,
+                    DifficultyId = (int)Difficulties.Medium,
+                    Name = "DEFAULT",
+                    RemainingGuesses = 1
+                },
+                new Highscore
+                {
+                    Id = 3,
+                    DifficultyId = (int)Difficulties.Hard,
+                    Name = "DEFAULT",
+                    RemainingGuesses = 1
+                },
+                new Highscore
+                {
+                    Id = 4,
+                    DifficultyId = (int)Difficulties.VeryHard,
+                    Name = "DEFAULT",
+                    RemainingGuesses = 1
+                }
             };
         }
     }

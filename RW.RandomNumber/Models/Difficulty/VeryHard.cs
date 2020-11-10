@@ -2,6 +2,6 @@
 {
     public class VeryHard : Base
     {
-        public VeryHard() : base("Very Hard", 1, 10000, 3) { }
+        public VeryHard(int id) : base(id, "Very Hard", 1, 10000, 3) { }
     }
 }

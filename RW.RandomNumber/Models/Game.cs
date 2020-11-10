@@ -7,11 +7,13 @@ namespace RW.RandomNumber.Models
     public class Game
     {
         private int _RandomNumber { get; set; }
+        public string PlayerName { get; set; }
         public Base Difficulty { get; set; }
 
         [Display(Name = "Guesses Remaining")]
         public int RemainingGuesses { get; set; }
         public bool Win { get; set; }
+        public bool NewHighscore { get; set; }
         public string Message { get; set; }
 
         public Game(Difficulties difficulty)

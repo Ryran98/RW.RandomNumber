@@ -9,13 +9,13 @@ namespace RW.RandomNumber.Models.Difficulty
             switch (difficulty)
             {
                 case Difficulties.Easy:
-                    return new Easy();
+                    return new Easy((int)difficulty);
                 case Difficulties.Medium:
-                    return new Medium();
+                    return new Medium((int)difficulty);
                 case Difficulties.Hard:
-                    return new Hard();
+                    return new Hard((int)difficulty);
                 case Difficulties.VeryHard:
-                    return new VeryHard();
+                    return new VeryHard((int)difficulty);
                 default:
                     throw new Exception($"No difficulty found for {difficulty}");
             }

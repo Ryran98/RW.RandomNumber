@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using RW.RandomNumber.Models;
 
@@ -29,6 +30,7 @@ namespace RW.RandomNumber.Controllers
             try
             {
                 game.Win = game.Guess(int.Parse(collection["Guess"].ToString()));
+                game.NewHighscore = Highscore.Check(game);
             }
             catch (Exception e)
             {
